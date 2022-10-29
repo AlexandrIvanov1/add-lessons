@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import {Button} from "./components/Button";
+
+type DataType = {
+    userId: number
+    id: number
+    title: string
+    completed: boolean
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    let [data, setData] = useState<Array<DataType>>([])
+
+    const showData = () => {
+            fetch('https://jsonplaceholder.typicode.com/todos')
+                .then(response => response.json())
+                .then(json => setData(json))
+    }
+
+    const cleanData = () => {
+        setData([])
+    }
+
+    return (
+        <div className="App">
+            <Button name={'Show data'} callback={showData}/>
+            <Button name={'Clean data'} callback={cleanData}/>
+            <ul>
+                {data.map(d => {
+                    return (
+                        <li key={d.id}>
+                            <span>{d.id}.</span>
+                            <span>{d.title} - </span>
+                            <span>{d.completed.toString()}</span>
+                        </li>
+                    )
+                })}
+            </ul>
+        </div>
+    );
 }
 
 export default App;
